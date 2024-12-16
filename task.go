@@ -26,11 +26,12 @@ learn more: https://go.dev/doc/database/sql-injection
 
 // note for reflect: only exported fields of a struct are settable.
 type task struct {
-	ID      uint
-	Name    string
-	Project string
-	Status  string
-	Created time.Time
+	ID       uint
+	Name     string
+	Priority int
+	Project  string
+	Status   string
+	Created  time.Time
 }
 
 func newTask(name string) task {
@@ -42,7 +43,7 @@ func newTask(name string) task {
 }
 
 func (t task) String() string {
-	return fmt.Sprintf("name: %s\n project: %s\n status: %s\n created: %s", t.Name, t.Project, t.Status, t.Created.Format("2006-01-02"))
+	return fmt.Sprintf("%s\n project: %s\n status: %s\n created: %s", t.Name, t.Project, t.Status, t.Created.Format("2006-01-02"))
 }
 
 // implement list.Item & list.DefaultItem

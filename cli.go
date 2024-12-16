@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"strings"
+
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 )
 
 type cmd string
@@ -36,9 +39,10 @@ func processCmds(args []string, db *taskDB) error {
 		if err != nil {
 			return err
 		}
-		for _, t := range tasks {
-			fmt.Printf("%v\n", t)
-		}
+		taskTable(tasks)
+		// for _, t := range tasks {
+		// 	fmt.Printf("%v\n", t)
+		// }
 	case modifyCmd:
 		fmt.Println("modify")
 	case archiveCmd:
@@ -48,4 +52,29 @@ func processCmds(args []string, db *taskDB) error {
 	}
 
 	return nil
+}
+
+func taskTable(tasks []task) {
+
+	tbl := table.New().
+		// BorderColumn(false).
+		// Border(lipgloss.NormalBorder()).
+		// BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("239"))).
+		BorderHeader(true).
+		StyleFunc(func(row, col int) lipgloss.Style {
+			switch {
+			case row == -1:
+				return lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+			case row%2 == 0:
+				return lipgloss.NewStyle().Background(lipgloss.Color("232"))
+			default:
+				return lipgloss.NewStyle().Background(lipgloss.Color("234"))
+			}
+		}).
+		Headers("ID", "Task", "Status", "Priority", "Project")
+
+	for _, t := range tasks {
+		tbl.Row(fmt.Sprintf("%d", t.ID), t.Name, t.Status, fmt.Sprintf("%d", t.Priority), t.Project)
+	}
+	fmt.Println(tbl)
 }
