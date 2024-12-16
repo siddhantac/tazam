@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"time"
 )
 
 type taskDB struct {
@@ -34,18 +33,19 @@ func (t *taskDB) createTable() error {
 	return err
 }
 
-func (t *taskDB) insert(name, project string) error {
+func (t *taskDB) insert(task task) (int64, error) {
 	// We don't care about the returned values, so we're using Exec. If we
 	// wanted to reuse these statements, it would be more efficient to use
 	// prepared statements. Learn more:
 	// https://go.dev/doc/database/prepared-statements
-	_, err := t.db.Exec(
+	result, err := t.db.Exec(
 		"INSERT INTO tasks(name, project, status, created) VALUES( ?, ?, ?, ?)",
-		name,
-		project,
-		todo.String(),
-		time.Now())
-	return err
+		task.Name,
+		task.Project,
+		task.Status,
+		task.Created)
+	id, _ := result.LastInsertId()
+	return id, err
 }
 
 func (t *taskDB) delete(id uint) error {

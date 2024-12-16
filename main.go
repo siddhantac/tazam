@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -25,15 +25,8 @@ func main() {
 		}
 	}
 
-	if err := db.insert("task 1", "project 1"); err != nil {
-		log.Printf("err: failed to insert task: %v", err)
-	}
-	tasks, err := db.getTasks()
-	if err != nil {
-		log.Printf("err: failed to get tasks: %v", err)
-	}
-	for _, task := range tasks {
-		fmt.Printf("task: %v\n\n", task)
+	if err := processCmds(os.Args[1:], db); err != nil {
+		log.Fatal(err)
 	}
 }
 

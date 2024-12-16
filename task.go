@@ -33,6 +33,14 @@ type task struct {
 	Created time.Time
 }
 
+func newTask(name string) task {
+	return task{
+		Name:    name,
+		Created: time.Now(),
+		Status:  todo.String(),
+	}
+}
+
 func (t task) String() string {
 	return fmt.Sprintf("name: %s\n project: %s\n status: %s\n created: %s", t.Name, t.Project, t.Status, t.Created.Format("2006-01-02"))
 }
