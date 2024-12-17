@@ -13,7 +13,7 @@ learn more: https://go.dev/doc/database/sql-injection
 */
 
 // note for reflect: only exported fields of a struct are settable.
-type task struct {
+type Task struct {
 	ID       uint
 	Name     string
 	Priority int
@@ -22,28 +22,28 @@ type task struct {
 	Created  time.Time
 }
 
-func newTask(name string) task {
-	return task{
+func newTask(name string) Task {
+	return Task{
 		Name:    name,
 		Created: time.Now(),
 		Status:  todo.String(),
 	}
 }
 
-func (t task) String() string {
+func (t Task) String() string {
 	return fmt.Sprintf("%s\n project: %s\n status: %s\n created: %s", t.Name, t.Project, t.Status, t.Created.Format("2006-01-02"))
 }
 
 // implement list.Item & list.DefaultItem
-func (t task) FilterValue() string {
+func (t Task) FilterValue() string {
 	return t.Name
 }
 
-func (t task) Title() string {
+func (t Task) Title() string {
 	return t.Name
 }
 
-func (t task) Description() string {
+func (t Task) Description() string {
 	return t.Project
 }
 

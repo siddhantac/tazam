@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"strconv"
 	"strings"
@@ -60,24 +61,23 @@ func processCmds(args []string, db *taskDB) error {
 		if len(args) < 2 {
 			return fmt.Errorf("too few arguments")
 		}
-		if len(args) == 2 {
-			id, err := strconv.ParseInt(args[1], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			task, err := db.getTask(uint(id))
-			if err != nil {
-				return err
-			}
-			task = modifyTask(task, args[1:])
-			if err := db.update(task); err != nil {
-				return err
-			}
-			fmt.Printf("Task %d: %s\n", task.ID, task.Status)
-			return nil
+		id, err := strconv.ParseInt(args[1], 10, 64)
+		if err != nil {
+			return err
 		}
-		return fmt.Errorf("unimplemented")
+
+		task, err := db.getTask(uint(id))
+		if err != nil {
+			return err
+		}
+		task, err = modifyTask(task, args[2:])
+		if err != nil {
+			return err
+		}
+		if err := db.update(task); err != nil {
+			return err
+		}
+		return nil
 	case archiveCmd:
 		fmt.Println("archive")
 	default:
@@ -87,15 +87,33 @@ func processCmds(args []string, db *taskDB) error {
 	return nil
 }
 
-func modifyTask(task task, args []string) task {
-	if len(args) == 1 {
+func modifyTask(task Task, args []string) (Task, error) {
+	if len(args) == 0 { // status update
 		s := StatusFromString(task.Status)
 		task.Status = s.Next().String()
+		fmt.Printf("Updated task %d: %s\n", task.ID, task.Status)
+		return task, nil
 	}
-	return task
+
+	modifyFS := flag.NewFlagSet("modify", flag.ExitOnError)
+
+	name := modifyFS.String("name", task.Name, "Task name")
+	project := modifyFS.String("project", task.Project, "project")
+	priority := modifyFS.Int("priority", task.Priority, "priority")
+
+	if err := modifyFS.Parse(args); err != nil {
+		return Task{}, err
+	}
+
+	task.Name = *name
+	task.Project = *project
+	task.Priority = *priority
+
+	fmt.Printf("Updated task %v\n", task.ID)
+	return task, nil
 }
 
-func taskTable(tasks []task) {
+func taskTable(tasks []Task) {
 	tbl := table.New().
 		// BorderColumn(false).
 		// Border(lipgloss.NormalBorder()).
