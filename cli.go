@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -35,14 +36,26 @@ func processCmds(args []string, db *taskDB) error {
 		}
 		fmt.Printf("created task %d\n", id)
 	case listCmd:
+		if len(args) > 1 {
+			id, err := strconv.ParseInt(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			task, err := db.getTask(uint(id))
+			if err != nil {
+				return err
+			}
+			fmt.Println(task)
+			return nil
+		}
+
 		tasks, err := db.getTasks()
 		if err != nil {
 			return err
 		}
 		taskTable(tasks)
-		// for _, t := range tasks {
-		// 	fmt.Printf("%v\n", t)
-		// }
+
 	case modifyCmd:
 		fmt.Println("modify")
 	case archiveCmd:
