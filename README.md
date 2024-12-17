@@ -1,18 +1,17 @@
 # Roadmap
 
 ## CLI
-- [ ] Add CLI command infra (cobra?)
 - [ ] Add commands 
-    - [ ] list all tasks
-    - [ ] list task by id
-    - [ ] create task
+    - [x] list all tasks
+    - [x] list task by id
+    - [x] create task
     - [ ] update task
     - [ ] delete task
     - [ ] list task with filters
 
 ## TUI
 - [ ] Kanban
-- [ ] Table
+- [x] Table
 
 
 # Brainstorming
