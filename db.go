@@ -57,17 +57,17 @@ func (t *taskDB) delete(id uint) error {
 // change, keep them empty if unchanged.
 func (t *taskDB) update(task task) error {
 	// Get the existing state of the task we want to update.
-	orig, err := t.getTask(task.ID)
-	if err != nil {
-		return err
-	}
+	// orig, err := t.getTask(task.ID)
+	// if err != nil {
+	// 	return err
+	// }
 	//orig.merge(task)
-	_, err = t.db.Exec(
+	_, err := t.db.Exec(
 		"UPDATE tasks SET name = ?, project = ?, status = ? WHERE id = ?",
-		orig.Name,
-		orig.Project,
-		orig.Status,
-		orig.ID)
+		task.Name,
+		task.Project,
+		task.Status,
+		task.ID)
 	return err
 }
 

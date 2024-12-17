@@ -5,18 +5,6 @@ import (
 	"time"
 )
 
-type status int
-
-const (
-	todo status = iota
-	inProgress
-	done
-)
-
-func (s status) String() string {
-	return [...]string{"todo", "in progress", "done"}[s]
-}
-
 /*
 A note on SQL statements:
 Make sure you're using parameterized SQL statements to avoid
@@ -60,11 +48,11 @@ func (t task) Description() string {
 }
 
 // implement kancli.Status
-func (s status) Next() int {
+func (s status) Next() status {
 	if s == done {
-		return int(todo)
+		return todo
 	}
-	return int(s + 1)
+	return status(s + 1)
 }
 
 func (s status) Prev() int {

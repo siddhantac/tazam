@@ -57,7 +57,27 @@ func processCmds(args []string, db *taskDB) error {
 		taskTable(tasks)
 
 	case modifyCmd:
-		fmt.Println("modify")
+		if len(args) < 2 {
+			return fmt.Errorf("too few arguments")
+		}
+		if len(args) == 2 {
+			id, err := strconv.ParseInt(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			task, err := db.getTask(uint(id))
+			if err != nil {
+				return err
+			}
+			task = modifyTask(task, args[1:])
+			if err := db.update(task); err != nil {
+				return err
+			}
+			fmt.Printf("Task %d: %s\n", task.ID, task.Status)
+			return nil
+		}
+		return fmt.Errorf("unimplemented")
 	case archiveCmd:
 		fmt.Println("archive")
 	default:
@@ -67,8 +87,15 @@ func processCmds(args []string, db *taskDB) error {
 	return nil
 }
 
-func taskTable(tasks []task) {
+func modifyTask(task task, args []string) task {
+	if len(args) == 1 {
+		s := StatusFromString(task.Status)
+		task.Status = s.Next().String()
+	}
+	return task
+}
 
+func taskTable(tasks []task) {
 	tbl := table.New().
 		// BorderColumn(false).
 		// Border(lipgloss.NormalBorder()).
