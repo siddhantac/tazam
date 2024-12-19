@@ -5,13 +5,15 @@
     - [x] list all tasks
     - [x] list task by id
     - [x] create task
-    - [ ] update task
-    - [ ] delete task
+    - [x] update task
     - [ ] list task with filters
+    - [ ] delete task
 
 ## TUI
 - [ ] Kanban
 - [x] Table
+- [ ] Progress bar for projects?
+- [ ] lipgloss list for tasks grouped by project
 
 
 # Brainstorming
