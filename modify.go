@@ -2,14 +2,13 @@ package main
 
 import (
 	"flag"
-	"fmt"
 )
 
 func modifyTask(task Task, args []string) (Task, error) {
 	if len(args) == 0 { // status update
 		s := StatusFromString(task.Status)
 		task.Status = s.Next().String()
-		fmt.Printf("Updated task %d: %s\n", task.ID, task.Status)
+		logOperation(task, "Updated status to "+task.Status)
 		return task, nil
 	}
 
@@ -27,6 +26,6 @@ func modifyTask(task Task, args []string) (Task, error) {
 	task.Project = *project
 	task.Priority = *priority
 
-	fmt.Printf("Updated task %v\n", task.ID)
+	logOperation(task, "updated")
 	return task, nil
 }

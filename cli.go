@@ -32,7 +32,7 @@ func processCmds(args []string, db *taskDB) error {
 		if err != nil {
 			return err
 		}
-		fmt.Printf("created task %d\n", t.ID)
+		logOperation(t, "added")
 	case listCmd:
 		if len(args) > 1 {
 			id, err := strconv.ParseInt(args[1], 10, 64)
