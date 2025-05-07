@@ -19,6 +19,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.db.Close()
+
 	if !db.tableExists() {
 		if err := db.createTable(); err != nil {
 			log.Fatal(err)
