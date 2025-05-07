@@ -1,5 +1,5 @@
 build:
-	go build -o tazam
+	go build -ldflags="-s -w" -o tazam
 
 run:
 	go run .
