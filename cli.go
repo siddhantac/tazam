@@ -24,7 +24,12 @@ func processCmds(args []string, db *taskDB) error {
 	// flag.StringVar(&userCmdStr, "cmd", "", "Command to execute")
 	// flag.Parse()
 
-	userCmd := cmd(args[0])
+	var userCmd cmd
+	if len(args) == 0 {
+		userCmd = listCmd
+	} else {
+		userCmd = cmd(args[0])
+	}
 
 	switch userCmd {
 	case addCmd:
