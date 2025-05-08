@@ -4,7 +4,7 @@ type status int
 
 const (
 	todo status = iota
-	inProgress
+	doing
 	done
 
 	unknown = -1
@@ -12,7 +12,7 @@ const (
 
 var statusStateMachine = []status{
 	todo,
-	inProgress,
+	doing,
 	done,
 }
 
@@ -20,24 +20,12 @@ func (s status) String() string {
 	if s == unknown {
 		return "unknown"
 	}
-	return [...]string{"todo", "in-progress", "done"}[s]
-}
-
-func StatusFromString(s string) status {
-	switch s {
-	case "todo":
-		return todo
-	case "in progress":
-		return inProgress
-	case "done":
-		return done
-	}
-	return unknown
+	return [...]string{"todo", "doing", "done"}[s]
 }
 
 func (s status) Next() status {
 	next := int(s) + 1
-	if next > len(statusStateMachine) {
+	if next >= len(statusStateMachine) {
 		next = 0
 	}
 	return statusStateMachine[next]
