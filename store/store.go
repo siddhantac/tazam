@@ -6,7 +6,7 @@ import "tazam/task"
 type Store interface {
 	Create(t task.Task) (int, error)
 	Read(id int) (task.Task, error)
-	Update(t, value task.Task) error
+	Update(t task.Task) error
 	Delete(t task.Task) error
 	List() ([]task.Task, error)
 }

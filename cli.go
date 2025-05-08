@@ -69,20 +69,20 @@ func processCmds(args []string, db2 store.Store) error {
 		}
 		id, err := strconv.ParseInt(args[1], 10, 64)
 		if err != nil {
-			return err
+			return fmt.Errorf("invalid id: %w", err)
 		}
 
 		task, err := db2.Read(int(id))
 		// task, err := db.getTask(uint(id))
 		if err != nil {
-			return err
+			return fmt.Errorf("read: %w", err)
 		}
 		task, err = modifyTask(task, args[2:])
 		if err != nil {
-			return err
+			return fmt.Errorf("modify: %w", err)
 		}
-		if err := db2.Update(task, task); err != nil {
-			return err
+		if err := db2.Update(task); err != nil {
+			return fmt.Errorf("update: %w", err)
 		}
 		return nil
 	case archiveCmd:

@@ -78,7 +78,7 @@ func (s *JSONStore) Create(t task.Task) (int, error) {
 // Read retrieves a value from the store by key
 func (s *JSONStore) Read(id int) (task.Task, error) {
 	var t task.Task
-	data, exists := s.data[t.ID]
+	data, exists := s.data[id]
 	if !exists {
 		return t, fmt.Errorf("key not found: %v", t.ID)
 	}
@@ -87,12 +87,12 @@ func (s *JSONStore) Read(id int) (task.Task, error) {
 }
 
 // Update modifies an existing key-value pair in the store
-func (s *JSONStore) Update(t task.Task, value task.Task) error {
+func (s *JSONStore) Update(t task.Task) error {
 	if _, exists := s.data[t.ID]; !exists {
 		return fmt.Errorf("key not found: %v", t.ID)
 	}
 
-	s.data[t.ID] = value
+	s.data[t.ID] = t
 	return s.save()
 }
 
