@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"tazam/store"
+	"tazam/task"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/lipgloss/table"
@@ -19,7 +21,7 @@ const (
 
 // processCmds processes command like args and flags
 // format: ./tazam cmd taskID flags
-func processCmds(args []string, db *taskDB) error {
+func processCmds(args []string, db2 store.Store) error {
 	// var userCmdStr string
 	// flag.StringVar(&userCmdStr, "cmd", "", "Command to execute")
 	// flag.Parse()
@@ -33,7 +35,7 @@ func processCmds(args []string, db *taskDB) error {
 
 	switch userCmd {
 	case addCmd:
-		t, err := addTask(args, db)
+		t, err := addTask(args, db2)
 		if err != nil {
 			return err
 		}
@@ -45,15 +47,17 @@ func processCmds(args []string, db *taskDB) error {
 				return err
 			}
 
-			task, err := db.getTask(uint(id))
+			t, err := db2.Read(int(id))
+			// task, err := db.getTask(uint(id))
 			if err != nil {
 				return err
 			}
-			fmt.Println(task)
+			fmt.Println(t)
 			return nil
 		}
 
-		tasks, err := db.getTasks()
+		tasks, err := db2.List()
+		// tasks, err := db.getTasks()
 		if err != nil {
 			return err
 		}
@@ -68,7 +72,8 @@ func processCmds(args []string, db *taskDB) error {
 			return err
 		}
 
-		task, err := db.getTask(uint(id))
+		task, err := db2.Read(int(id))
+		// task, err := db.getTask(uint(id))
 		if err != nil {
 			return err
 		}
@@ -76,7 +81,7 @@ func processCmds(args []string, db *taskDB) error {
 		if err != nil {
 			return err
 		}
-		if err := db.update(task); err != nil {
+		if err := db2.Update(task, task); err != nil {
 			return err
 		}
 		return nil
@@ -89,7 +94,7 @@ func processCmds(args []string, db *taskDB) error {
 	return nil
 }
 
-func taskTable(tasks []Task) {
+func taskTable(tasks []task.Task) {
 	tbl := table.New().
 		// BorderColumn(false).
 		// Border(lipgloss.NormalBorder()).
@@ -108,7 +113,7 @@ func taskTable(tasks []Task) {
 		Headers("ID", "Task", "Status", "Priority", "Project")
 
 	for _, t := range tasks {
-		tbl.Row(fmt.Sprintf("%d", t.ID), t.Name, t.Status, fmt.Sprintf("%d", t.Priority), t.Project)
+		tbl.Row(fmt.Sprintf("%d", t.ID), t.Name, t.Status.String(), fmt.Sprintf("%d", t.Priority), t.Project)
 	}
 	fmt.Println(tbl)
 }

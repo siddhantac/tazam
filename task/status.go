@@ -1,4 +1,4 @@
-package main
+package task
 
 type status int
 
@@ -33,4 +33,12 @@ func StatusFromString(s string) status {
 		return done
 	}
 	return unknown
+}
+
+func (s status) Next() status {
+	next := int(s) + 1
+	if next > len(statusStateMachine) {
+		next = 0
+	}
+	return statusStateMachine[next]
 }

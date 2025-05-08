@@ -1,4 +1,4 @@
-package main
+package task
 
 import (
 	"fmt"
@@ -14,19 +14,19 @@ learn more: https://go.dev/doc/database/sql-injection
 
 // note for reflect: only exported fields of a struct are settable.
 type Task struct {
-	ID       uint
+	ID       int
 	Name     string
 	Priority int
 	Project  string
-	Status   string
+	Status   status
 	Created  time.Time
 }
 
-func newTask(name string) Task {
+func New(name string) Task {
 	return Task{
 		Name:    name,
 		Created: time.Now(),
-		Status:  todo.String(),
+		Status:  todo,
 	}
 }
 
@@ -45,23 +45,4 @@ func (t Task) Title() string {
 
 func (t Task) Description() string {
 	return t.Project
-}
-
-// implement kancli.Status
-func (s status) Next() status {
-	if s == done {
-		return todo
-	}
-	return status(s + 1)
-}
-
-func (s status) Prev() int {
-	if s == todo {
-		return int(done)
-	}
-	return int(s - 1)
-}
-
-func (s status) Int() int {
-	return int(s)
 }

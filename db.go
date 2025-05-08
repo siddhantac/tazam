@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"tazam/task"
 )
 
 type taskDB struct {
@@ -33,7 +34,7 @@ func (t *taskDB) createTable() error {
 	return err
 }
 
-func (t *taskDB) insert(task Task) (int64, error) {
+func (t *taskDB) insert(task task.Task) (int64, error) {
 	// We don't care about the returned values, so we're using Exec. If we
 	// wanted to reuse these statements, it would be more efficient to use
 	// prepared statements. Learn more:
@@ -56,7 +57,7 @@ func (t *taskDB) delete(id uint) error {
 
 // Update the task in the db. Provide new values for the fields you want to
 // change, keep them empty if unchanged.
-func (t *taskDB) update(task Task) error {
+func (t *taskDB) update(task task.Task) error {
 	_, err := t.db.Exec(
 		"UPDATE tasks SET name = ?, project = ?, status = ?, priority = ? WHERE id = ?",
 		task.Name,
@@ -67,14 +68,14 @@ func (t *taskDB) update(task Task) error {
 	return err
 }
 
-func (t *taskDB) getTasks() ([]Task, error) {
-	var tasks []Task
+func (t *taskDB) getTasks() ([]task.Task, error) {
+	var tasks []task.Task
 	rows, err := t.db.Query("SELECT * FROM tasks")
 	if err != nil {
 		return tasks, fmt.Errorf("unable to get values: %w", err)
 	}
 	for rows.Next() {
-		var task Task
+		var task task.Task
 		err = rows.Scan(
 			&task.ID,
 			&task.Name,
@@ -91,14 +92,14 @@ func (t *taskDB) getTasks() ([]Task, error) {
 	return tasks, err
 }
 
-func (t *taskDB) getTasksByStatus(status string) ([]Task, error) {
-	var tasks []Task
+func (t *taskDB) getTasksByStatus(status string) ([]task.Task, error) {
+	var tasks []task.Task
 	rows, err := t.db.Query("SELECT * FROM tasks WHERE status = ?", status)
 	if err != nil {
 		return tasks, fmt.Errorf("unable to get values: %w", err)
 	}
 	for rows.Next() {
-		var task Task
+		var task task.Task
 		err = rows.Scan(
 			&task.ID,
 			&task.Name,
@@ -115,8 +116,8 @@ func (t *taskDB) getTasksByStatus(status string) ([]Task, error) {
 	return tasks, err
 }
 
-func (t *taskDB) getTask(id uint) (Task, error) {
-	var task Task
+func (t *taskDB) getTask(id uint) (task.Task, error) {
+	var task task.Task
 	err := t.db.QueryRow("SELECT * FROM tasks WHERE id = ?", id).
 		Scan(
 			&task.ID,

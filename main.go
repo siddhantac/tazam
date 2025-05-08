@@ -5,29 +5,35 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"tazam/store"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	path := "/Users/siddhanta.c/workspace/projects/tazam/tasks"
-	if err := initTaskDir(path); err != nil {
-		log.Fatal(err)
-	}
+	// path := "/Users/siddhanta.c/workspace/projects/tazam/data"
+	// if err := initTaskDir(path); err != nil {
+	// 	log.Fatal(err)
+	// }
+	//
+	// db, err := openDB(path)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer db.db.Close()
 
-	db, err := openDB(path)
+	// if !db.tableExists() {
+	// 	if err := db.createTable(); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }
+
+	jsondb, err := store.NewJSONStore("data/tasks.json")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.db.Close()
 
-	if !db.tableExists() {
-		if err := db.createTable(); err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	if err := processCmds(os.Args[1:], db); err != nil {
+	if err := processCmds(os.Args[1:], jsondb); err != nil {
 		log.Fatal(err)
 	}
 }

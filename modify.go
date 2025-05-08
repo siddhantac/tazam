@@ -2,30 +2,30 @@ package main
 
 import (
 	"flag"
+	"tazam/task"
 )
 
-func modifyTask(task Task, args []string) (Task, error) {
+func modifyTask(t task.Task, args []string) (task.Task, error) {
 	if len(args) == 0 { // status update
-		s := StatusFromString(task.Status)
-		task.Status = s.Next().String()
-		logOperation(task, "Updated status to "+task.Status)
-		return task, nil
+		t.Status = t.Status.Next()
+		logOperation(t, "Updated status to "+t.Status.String())
+		return t, nil
 	}
 
 	modifyFS := flag.NewFlagSet("modify", flag.ExitOnError)
 
-	name := modifyFS.String("name", task.Name, "Task name")
-	project := modifyFS.String("project", task.Project, "project")
-	priority := modifyFS.Int("priority", task.Priority, "priority")
+	name := modifyFS.String("name", t.Name, "Task name")
+	project := modifyFS.String("project", t.Project, "project")
+	priority := modifyFS.Int("priority", t.Priority, "priority")
 
 	if err := modifyFS.Parse(args); err != nil {
-		return Task{}, err
+		return task.Task{}, err
 	}
 
-	task.Name = *name
-	task.Project = *project
-	task.Priority = *priority
+	t.Name = *name
+	t.Project = *project
+	t.Priority = *priority
 
-	logOperation(task, "updated")
-	return task, nil
+	logOperation(t, "updated")
+	return t, nil
 }

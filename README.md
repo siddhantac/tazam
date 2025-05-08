@@ -95,3 +95,18 @@ tazam modify 3 -s=done
 - allow use of flag
 - infer status change if no flag provided
 - also allow use of number for state transition (eg., todo=0, doing=1, done=2)
+
+---
+
+# 2025-05-07
+
+## CLI commands - brainstorming v2
+
+| Command | Description |
+| --- | --- |
+| tazam   | list all tasks |
+| tazam   | list all tasks |
+| tazam 3 | list task by id |
+| tazam -p=project_name | list tasks by project |
+| tazam add Hello world first task   | add a new task |
+| tazam modify 3 -p=project_name -t=newTag -d="this is a detailed description of the task" | modify a task |

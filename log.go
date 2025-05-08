@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"tazam/task"
+)
 
-func logOperation(task Task, log string) {
+func logOperation(task task.Task, log string) {
 	fmt.Printf("task %d %s\n", task.ID, log)
 }

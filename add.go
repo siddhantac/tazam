@@ -3,23 +3,25 @@ package main
 import (
 	"flag"
 	"strings"
+	"tazam/store"
+	"tazam/task"
 )
 
 const defaultPriority = 2
 
-func addTask(args []string, db *taskDB) (Task, error) {
+func addTask(args []string, db store.Store) (task.Task, error) {
 	addFS := flag.NewFlagSet("add", flag.ExitOnError)
-	name := addFS.String("name", "", "Task name")
+	name := addFS.String("name", "", "task.Task name")
 	project := addFS.String("project", "", "project")
 	priority := addFS.Int("priority", defaultPriority, "priority")
 	addFS.Parse(args[1:])
 
-	var t Task
+	var t task.Task
 
 	if *name != "" {
-		t = newTask(*name)
+		t = task.New(*name)
 	} else {
-		t = newTask(strings.Join(args[1:], " "))
+		t = task.New(strings.Join(args[1:], " "))
 	}
 
 	if *project != "" {
@@ -28,10 +30,10 @@ func addTask(args []string, db *taskDB) (Task, error) {
 
 	t.Priority = *priority
 
-	id, err := db.insert(t)
+	id, err := db.Create(t)
 	if err != nil {
-		return Task{}, err
+		return task.Task{}, err
 	}
-	t.ID = uint(id)
+	t.ID = int(id)
 	return t, nil
 }
