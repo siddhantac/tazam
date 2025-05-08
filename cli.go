@@ -21,7 +21,7 @@ const (
 
 // processCmds processes command like args and flags
 // format: ./tazam cmd taskID flags
-func processCmds(args []string, db2 store.Store) error {
+func processCmds(args []string, db store.Store) error {
 	// var userCmdStr string
 	// flag.StringVar(&userCmdStr, "cmd", "", "Command to execute")
 	// flag.Parse()
@@ -35,7 +35,7 @@ func processCmds(args []string, db2 store.Store) error {
 
 	switch userCmd {
 	case addCmd:
-		t, err := addTask(args, db2)
+		t, err := addTask(args, db)
 		if err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ func processCmds(args []string, db2 store.Store) error {
 				return err
 			}
 
-			t, err := db2.Read(int(id))
+			t, err := db.Read(int(id))
 			// task, err := db.getTask(uint(id))
 			if err != nil {
 				return err
@@ -56,7 +56,7 @@ func processCmds(args []string, db2 store.Store) error {
 			return nil
 		}
 
-		tasks, err := db2.List()
+		tasks, err := db.List()
 		// tasks, err := db.getTasks()
 		if err != nil {
 			return err
@@ -72,7 +72,7 @@ func processCmds(args []string, db2 store.Store) error {
 			return fmt.Errorf("invalid id: %w", err)
 		}
 
-		task, err := db2.Read(int(id))
+		task, err := db.Read(int(id))
 		// task, err := db.getTask(uint(id))
 		if err != nil {
 			return fmt.Errorf("read: %w", err)
@@ -81,7 +81,7 @@ func processCmds(args []string, db2 store.Store) error {
 		if err != nil {
 			return fmt.Errorf("modify: %w", err)
 		}
-		if err := db2.Update(task); err != nil {
+		if err := db.Update(task); err != nil {
 			return fmt.Errorf("update: %w", err)
 		}
 		return nil
