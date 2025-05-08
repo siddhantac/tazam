@@ -2,10 +2,14 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"tazam/store"
+	"tazam/tui"
+
+	tea "github.com/charmbracelet/bubbletea"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -31,6 +35,19 @@ func main() {
 	jsondb, err := store.NewJSONStore("data/tasks.json")
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if len(os.Args) > 1 && os.Args[1] == "tui" {
+		tasks, err := jsondb.List()
+		if err != nil {
+			fmt.Println("error:", err)
+			os.Exit(1)
+		}
+		p := tea.NewProgram(tui.New(tasks, jsondb))
+		if _, err := p.Run(); err != nil {
+			fmt.Println("Error running program:", err)
+			os.Exit(1)
+		}
 	}
 
 	if err := processCmds(os.Args[1:], jsondb); err != nil {
